@@ -1,4 +1,10 @@
 import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import session from 'express-session';
+import flash from './src/middleware/flash.js';
+import router from './src/routes/index.js';
+import { testConnection } from './src/db/db.js';
 
 const nodeEnv = process.env.NODE_ENV?.toLowerCase() || 'production';
 const PORT = process.env.PORT || 3000;
