@@ -2,34 +2,44 @@ import {signUpForm, signInForm} from '../models/form.js';
 
 
 const signUp = async (req, res) => {
-    const { username, email, password_hash } = req.body;
-    try{
-        const user = await signUpForm(username, email, password_hash);
-        res.status(201).json(user);
+    const { username, email, password } = req.body;
 
-        res.redirect('/login');
+    if (!username || !email || !password) {
+        return res.status(400).json({ error: 'Username, email, and password are required' });
+    }
+
+    try{
+        const user = await signUpForm(username, email, password);
+        return res.status(201).json({
+            message: 'User registered successfully',
+            user
+        });
     } catch (error) {
-        res.status(500).json({ error: 'Failed to sign up' });
-        res.redirect('/signup');
+        return res.status(500).json({ error: 'Failed to sign up' });
     }
 }
 
 const signIn = async (req, res) => {
-    const { email, password_hash } = req.body;
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).json({ error: 'Email and password are required' });
+    }
+
     try {
-        const user = await signInForm(email, password_hash);
+        const user = await signInForm(email, password);
         if (user) {
             req.session.user = user;
-            res.status(200).json(user);
-            res.redirect('/dashboard');
+            return res.status(200).json({
+                message: 'Login successful',
+                user
+            });
         }
         else {
-            res.status(401).json({ error: 'Invalid email or password' });
-            res.redirect('/login');
+            return res.status(401).json({ error: 'Invalid email or password' });
         }
     } catch (error) {
-        res.status(500).json({ error: 'Failed to sign in' });
-        res.redirect('/login');
+        return res.status(500).json({ error: 'Failed to sign in' });
     }
 }
 

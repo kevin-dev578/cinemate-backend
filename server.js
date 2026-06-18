@@ -25,6 +25,9 @@ app.use(session({
     cookie: { maxAge: 60 * 60 * 1000 } // Session expires after 1 hour of inactivity
 }));
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(router);
