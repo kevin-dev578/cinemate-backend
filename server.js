@@ -19,10 +19,10 @@ const PORT = process.env.PORT || 3000;
 
 // Enable CORS
 app.use(cors({
-    origin: '*', // Allow all origins (adjust for production security)
+    origin: process.env.FRONTEND_ORIGIN, // Allow all origins (adjust for production security)
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type']
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(session({
@@ -41,6 +41,7 @@ app.use(router);
 
 app.listen(PORT, async () => {
     try {
+        console.log(` Session secret is : ${SESSION_SECRET}`);
         await testConnection();
         console.log(`Server is running on port ${PORT}`);
     }
