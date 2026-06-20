@@ -1,11 +1,8 @@
-import express from 'express';
-import { signUp, signIn } from './src/controllers/form.js';
+import { Router } from "express";
+import { handleSignUp } from "./src/controllers/form";
+
+const router = Router();
+router.post("/signup", handleSignUp);
 
 
-const router = express.Router();
-
-router.post("/register", signUp);
-router.post("/login", signIn);
-
-
-export default router;
+export {router as default};

@@ -1,46 +1,43 @@
-import {signUpForm, signInForm} from '../models/form.js';
+import { signUpForm } from "../models/form";
+import flash from 'connect-flash';
+import { body } from "express-validator";
 
 
-const signUp = async (req, res) => {
+const validateSignUpForm = [
+    body("username")
+        .trim()
+        .isEmpty()
+        .withMessage("Please enter a username."),
+    body("email")
+        .trim()
+        .isEmpty()
+        .withMessage("Please enter your email.")
+        .normalizeEmail()
+        .withMessage("Email should contain @ after characters."),
+    body("password")
+        .trim()
+        .isEmpty()
+        .withMessage("Please enter a password")
+        .isLength({min: 6})
+        .withMessage("Please enter a password with a minimum of 6 characters.")
+        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/) 
+];
+
+const handleSignUp = async (req, res) => {
     const { username, email, password } = req.body;
-
-    if (!username || !email || !password) {
-        return res.status(400).json({ error: 'Username, email, and password are required' });
-    }
-
-    try{
-        const user = await signUpForm(username, email, password);
-        return res.status(201).json({
-            message: 'User registered successfully',
-            user
-        });
-    } catch (error) {
-        return res.status(500).json({ error: 'Failed to sign up' });
-    }
-}
-
-const signIn = async (req, res) => {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-        return res.status(400).json({ error: 'Email and password are required' });
-    }
-
     try {
-        const user = await signInForm(email, password);
-        if (user) {
-            req.session.user = user;
-            return res.status(200).json({
-                message: 'Login successful',
-                user
-            });
-        }
-        else {
-            return res.status(401).json({ error: 'Invalid email or password' });
-        }
+        const newUser = await signUpForm(username, email, password);
+        req.flash('success', "CineMate account has been created successfully.");
     } catch (error) {
-        return res.status(500).json({ error: 'Failed to sign in' });
+        if (process.env.NODE_ENV == 'development') {
+            console.error("Error signing up user:", error);
+        }
+        req.flash("error", "Error creating your CineMate account. Please try again");
     }
-}
+};
 
-export { signUp, signIn };
+
+
+
+
+export { handleSignUp, validateSignUpForm };
