@@ -4,6 +4,7 @@ import session from 'express-session';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import router from './routes.js';
+import cors from 'cors';
 import { testConnection } from './src/models/db.js';
 
 
