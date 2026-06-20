@@ -64,6 +64,11 @@ const handleSignUp = async (req, res) => {
         if (process.env.NODE_ENV == 'development') {
             console.error("Error signing up user:", error);
         }
+
+        if (error.message === "DUPLICATE_USER") {
+            return res.status(409).json({ success: false, message: "That username or email is already taken." });
+        }
+
         res.status(400).json({ success: false, message: "Signup failed" });
     }
 };

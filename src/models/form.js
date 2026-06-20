@@ -9,13 +9,16 @@ const signUpForm = async (username, email, password) => {
         const query = `INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING user_id`;
         const result = await db.query(query, [username, email, hashedPassword]);
 
-        if (result.rows.length === 0){
+        if (result.rows.length === 0) {
             return null;
         }
         return result.rows[0];
     } catch (err) {
-        if (process.env.NODE_ENV === 'development'){
+        if (process.env.NODE_ENV === 'development') {
             console.error("Error inserting user:", err.stack);
+        }
+        if (err.code === '23505') {
+            throw new Error("DUPLICATE_USER");
         }
         throw new Error("Could not create user");
     }
