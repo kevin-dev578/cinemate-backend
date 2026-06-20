@@ -17,6 +17,11 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+app.use(cors({
+    origin: process.env.FRONTEND_ORIGIN, // your Vite dev server
+    credentials: true // needed if you're sending cookies/sessions
+}));
+
 // Configure session middleware with a secret and options for resaving and initializing sessions
 app.use(session({
     secret: SESSION_SECRET, // Use the SESSION_SECRET from environment variables for security
@@ -34,11 +39,6 @@ console.log(`Serving static files from: ${path.join(__dirname, 'public')}`);
 
 // Import and use routes
 app.use(router);
-
-app.use(cors({
-    origin: process.env.FRONTEND_ORIGIN, // your Vite dev server
-    credentials: true // needed if you're sending cookies/sessions
-}));
 
 // start the server immediately, then probe the database in the background
 app.listen(PORT, () => {
