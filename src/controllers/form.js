@@ -1,4 +1,4 @@
-import { signUpForm, authenticateLogin} from "../models/form";
+import { signUpForm, authenticateLogin } from "../models/form.js";
 import flash from 'connect-flash';
 import { body } from "express-validator";
 import session from "express-session";

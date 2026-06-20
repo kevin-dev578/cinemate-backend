@@ -13,11 +13,7 @@ import { Pool } from 'pg';
  */
 const poolConfig = {
     connectionString: process.env.DB_URL,
-    ssl: process.env.DB_SSL === 'false'
-        ? false
-        : {
-            rejectUnauthorized: false
-        }
+    ssl: { rejectUnauthorized: false }
 };
 
 const pool = new Pool(poolConfig);

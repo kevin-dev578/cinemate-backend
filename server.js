@@ -1,9 +1,11 @@
+import './env.js';
 import express from 'express';
-import session from "express-session";
-import router from './routes';
-import dotenv from 'dotenv';
-import { testConnection } from './src/models/db';
-dotenv.config();
+import session from 'express-session';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import router from './routes.js';
+import { testConnection } from './src/models/db.js';
+
 
 const nodeEnv = process.env.NODE_ENV?.toLowerCase() || 'production';
 const PORT = process.env.PORT || 3000;
@@ -32,15 +34,20 @@ console.log(`Serving static files from: ${path.join(__dirname, 'public')}`);
 // Import and use routes
 app.use(router);
 
-// start the server with async/await and error handling incase of issues
-app.listen(PORT, async () => {
-    try {
-        await testConnection();
-        console.log(`Server is running at http://127.0.0.1:${PORT}`);
-        console.log(`Environment: ${nodeEnv}`);
-    } catch (error) {
+app.use(cors({
+    origin: process.env.FRONTEND_ORIGIN, // your Vite dev server
+    credentials: true // needed if you're sending cookies/sessions
+}));
+
+// start the server immediately, then probe the database in the background
+app.listen(PORT, () => {
+    console.log("DB_URL:", process.env.DB_URL);
+    console.log(`Server is running at http://127.0.0.1:${PORT}`);
+    console.log(`Environment: ${nodeEnv}`);
+
+    testConnection().catch((error) => {
         console.error('Error connecting to the database:', error);
-    }
+    });
 });
 
 // Export app (ESM style)

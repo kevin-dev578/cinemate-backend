@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { handleSignUp, validateSignUpForm, validateLoginForm, handleAuthentication } from "./src/controllers/form";
+import { handleSignUp, validateSignUpForm, validateLoginForm, handleAuthentication } from "./src/controllers/form.js";
 
 const router = Router();
 router.post("/login", validateLoginForm, handleAuthentication);
