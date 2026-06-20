@@ -34,7 +34,7 @@ const authenticateLogin = async (email, password) => {
         }
 
         const user = result.rows[0];
-        const match = bcrypt.compare(password, user.password_hash);
+        const match = await bcrypt.compare(password, user.password_hash);
 
         if (!match) {
             // Password does not match
