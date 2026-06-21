@@ -41,6 +41,14 @@ const validateLoginForm = [
         .withMessage("Password must include uppercase, lowercase, and a number.")
 ];
 
+const getCurrentUser = (req, res) => {
+    if (req.session.user) {
+        res.status(200).json({ loggedIn: true, user: req.session.user });
+    } else {
+        res.status(200).json({ loggedIn: false });
+    }
+};
+
 const handleValidationErrors = (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -97,5 +105,6 @@ export {
     validateSignUpForm,
     validateLoginForm,
     handleAuthentication,
-    handleValidationErrors
+    handleValidationErrors,
+    getCurrentUser
 };
