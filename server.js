@@ -30,7 +30,8 @@ app.use(cors({
 app.use(session({
     store: new PgSession({
         pool: pool,
-        tableName: 'session'
+        tableName: 'session',
+        createTableIfMissing: true
     }),
     secret: SESSION_SECRET, // Use the SESSION_SECRET from environment variables for security
     resave: false, // what does this do? - Don't save session if unmodified
