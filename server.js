@@ -1,11 +1,15 @@
 import './env.js';
 import express from 'express';
 import session from 'express-session';
+import pgSession from 'connect-pg-simple';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import router from './routes.js';
 import cors from 'cors';
-import { testConnection } from './src/models/db.js';
+import { testConnection, pool} from './src/models/db.js';
+
+
+const PgSession = pgSession(session);
 
 
 const nodeEnv = process.env.NODE_ENV?.toLowerCase() || 'production';
@@ -24,6 +28,10 @@ app.use(cors({
 
 // Configure session middleware with a secret and options for resaving and initializing sessions
 app.use(session({
+    store: new pgSession({
+        pool: pool,
+        tableName: 'session'
+    }),
     secret: SESSION_SECRET, // Use the SESSION_SECRET from environment variables for security
     resave: false, // what does this do? - Don't save session if unmodified
     saveUninitialized: true, // Save uninitialized sessions (new but not modified), this means that a session will be created for every user, even if they don't log in or interact with the site, which can lead to a large number of unused sessions in the store. Consider setting this to false if you want to only create sessions for users who log in or interact with the site.
