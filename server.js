@@ -28,7 +28,7 @@ app.use(cors({
 
 // Configure session middleware with a secret and options for resaving and initializing sessions
 app.use(session({
-    store: new pgSession({
+    store: new PgSession({
         pool: pool,
         tableName: 'session'
     }),
